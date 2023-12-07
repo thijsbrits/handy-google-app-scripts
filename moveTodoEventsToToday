@@ -1,0 +1,39 @@
+function moveTodoEventsToToday() {
+    var calendar = CalendarApp.getDefaultCalendar();
+    var today = new Date();
+    
+    var lastWeeks = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7); // last 2 weeks to be safe, they should already be moved
+    var events = calendar.getEvents(lastWeeks, today);
+
+    console.log(lastWeeks);
+    
+    for (var i = 0; i < events.length; i++) {
+        var event = events[i];
+        var title = event.getTitle().toLowerCase();
+        var startTime = event.getStartTime();
+        var endTime = event.getEndTime();
+        var duration = endTime.getTime() - startTime.getTime(); // needed because isAllDayEvent does not capture all
+        var isAllDayEvent = event.isAllDayEvent() || duration === 86400000
+        
+        if (!title.includes("done:") && !(title === "focus time" || title === "out of office") && !event.isRecurringEvent() && !isAllDayEvent) {
+            var guests = event.getGuestList(true);
+
+            if (guests.length === 0 && event.isOwnedByMe()) {
+                console.log("-----");
+                console.log(event.isAllDayEvent());
+                console.log(duration);
+                console.log("title:" + title);
+                console.log(event.getEventSeries().getTitle());
+                console.log(event.getStartTime());
+
+
+                var newStart = new Date(today.getTime());
+                newStart.setHours(startTime.getHours(), startTime.getMinutes());
+                var newEnd = new Date(newStart.getTime() + duration);
+                console.log(newStart, newEnd);
+
+                // event.setTime(newStart, newEnd);
+            }
+        }
+    }
+}
