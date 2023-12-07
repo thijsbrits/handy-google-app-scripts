@@ -1,12 +1,13 @@
 function moveTodoEventsToToday() {
     var calendar = CalendarApp.getDefaultCalendar();
     var today = new Date();
+
+    var yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
     
     var lastWeeks = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7); // last 2 weeks to be safe, they should already be moved
-    var events = calendar.getEvents(lastWeeks, today);
+    var events = calendar.getEvents(lastWeeks, yesterday);
 
-    console.log(lastWeeks);
-    
     for (var i = 0; i < events.length; i++) {
         var event = events[i];
         var title = event.getTitle().toLowerCase();
@@ -20,19 +21,14 @@ function moveTodoEventsToToday() {
 
             if (guests.length === 0 && event.isOwnedByMe()) {
                 console.log("-----");
-                console.log(event.isAllDayEvent());
-                console.log(duration);
-                console.log("title:" + title);
-                console.log(event.getEventSeries().getTitle());
                 console.log(event.getStartTime());
 
-
                 var newStart = new Date(today.getTime());
-                newStart.setHours(startTime.getHours(), startTime.getMinutes());
+                newStart.setHours(8, 0);
                 var newEnd = new Date(newStart.getTime() + duration);
-                console.log(newStart, newEnd);
 
-                // event.setTime(newStart, newEnd);
+                event.setTime(newStart, newEnd);
+                console.log("moved:" + title);
             }
         }
     }
