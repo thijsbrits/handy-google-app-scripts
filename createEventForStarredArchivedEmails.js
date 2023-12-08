@@ -12,6 +12,11 @@ function createEventForStarredArchivedEmails() {
     const endTime = new Date(startTime.getTime() + duration);
 
     createCalendarEvent(messageSubject, startTime, endTime);
+    var messages = thread.getMessages();
+    for (const msg of messages) {
+        msg.unstar();
+        Logger.log('Message: ' + msg.getPlainBody() + msg.isStarred());
+    }
   }
 }
 
