@@ -1,0 +1,18 @@
+function processIdeas() {
+  var sheetId = 'GOOGLE_SHEET_ID'; // Replace with your Google Sheet ID
+  var sheet = SpreadsheetApp.openById(sheetId).getActiveSheet();
+  var threads = GmailApp.search('subject:"idea:" in:inbox');
+
+  threads.forEach(function(thread) {
+    var messages = thread.getMessages();
+    messages.forEach(function(message) {
+      if (message.getSubject().startsWith("idea:")) {
+        var date = message.getDate();
+        var subject = message.getSubject();
+        subject = subject.split("idea:")[1].trim();
+        sheet.appendRow([date, subject]);
+        thread.moveToArchive();
+      }
+    });
+  });
+}
