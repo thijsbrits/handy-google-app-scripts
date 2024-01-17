@@ -1,0 +1,10 @@
+function moveMyOwnEmailsOutOfSpam() {
+  var myEmail = Session.getActiveUser().getEmail();
+  var query = 'in:spam from:' + myEmail;
+  var threads = GmailApp.search(query);
+
+  for (const thread of threads) {
+    GmailApp.moveThreadToInbox(thread);
+    console.log(thread.getFirstMessageSubject());
+  }
+}
