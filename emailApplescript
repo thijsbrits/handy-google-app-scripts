@@ -1,0 +1,15 @@
+on run {input, parameters}
+	try
+		tell application "Mail"
+			set newMessage to make new outgoing message with properties {subject:"note reminder: " & item 1 of input, content:"", visible:true}
+			tell newMessage
+				make new to recipient at end of to recipients with properties {address:"{EMAIL}"}
+				send
+			end tell
+		end tell
+		display notification "Email successfully sent" with title "Email Status"
+	on error errMsg
+		display notification "Error: " & errMsg with title "Email Status"
+		# 	tell application "Mail" to quit
+	end try
+end run
